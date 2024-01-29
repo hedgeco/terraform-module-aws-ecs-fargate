@@ -221,6 +221,8 @@ resource "aws_ecs_service" "service" {
   health_check_grace_period_seconds  = var.lb_arn == "" ? null : var.health_check_grace_period_seconds
   wait_for_steady_state              = var.wait_for_steady_state
   enable_execute_command             = var.enable_execute_command
+  propagate_tags                     = vsr.propagate_tags
+  
   network_configuration {
     subnets          = var.private_subnet_ids
     security_groups  = concat([aws_security_group.ecs_service.id], var.service_sg_ids)
