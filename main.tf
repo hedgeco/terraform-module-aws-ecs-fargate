@@ -196,7 +196,7 @@ resource "aws_ecs_task_definition" "task" {
       name = volume.value["name"]
     }
   }
-  container_definitions = jsonencode(concat([local.container_definition], var.sidecar_containers))
+  container_definitions = jsonencode(concat([local.container_definition], var.sidecar_containers, data.template_file.datadog_task_template.*.rendered),)
   runtime_platform {
     operating_system_family = var.task_definition_os_family
     cpu_architecture        = var.task_definition_cpu_arch
@@ -282,4 +282,12 @@ resource "aws_ecs_service" "service" {
 # Service depends on this resources which prevents it from being created until the LB is ready
 resource "null_resource" "lb_exists" {
   triggers = var.lb_arn == "" ? {} : { alb_name = var.lb_arn }
+}
+
+#### Datadog 
+data "template_file" "datadog_task_template" {
+  count = var.enable_datadog_agent ? 1 : 0
+  template = file(
+    "${path.module}/task-definitions/datadog.json",
+  )
 }

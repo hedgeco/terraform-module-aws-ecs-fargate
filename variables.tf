@@ -299,6 +299,12 @@ variable "enable_execute_command" {
   default     = false
 }
 
+variable "enable_datadog_agent" {
+  description = "Enable datadog agent"
+  type        = bool
+  default     = false
+}
+
 variable "sidecar_containers" {
   description = "List of sidecar containers"
   type        = any
