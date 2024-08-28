@@ -196,7 +196,8 @@ resource "aws_ecs_task_definition" "task" {
       name = volume.value["name"]
     }
   }
-  container_definitions = jsonencode(concat([local.container_definition], var.sidecar_containers, data.template_file.datadog_task_template.*.rendered),)
+  
+  container_definitions = jsonencode(concat([local.container_definition], var.sidecar_containers))
   runtime_platform {
     operating_system_family = var.task_definition_os_family
     cpu_architecture        = var.task_definition_cpu_arch
@@ -273,6 +274,8 @@ resource "aws_ecs_service" "service" {
       weight            = lookup(capacity_provider_strategy.value, "weight", null)
     }
   }
+
+  tags = var.tags
 }
 
 # HACK: The workaround used in ecs/service does not work for some reason in this module, this fixes the following error:
