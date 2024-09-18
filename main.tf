@@ -115,6 +115,7 @@ resource "aws_lb_target_group" "task" {
   }
   protocol_version = var.protocol_version
 
+  load_balancing_algorithm_type = var.target_group_load_balancing_algorithm_type
   # NOTE: TF is unable to destroy a target group while a listener is attached,
   # therefor we have to create a new one before destroying the old. This also means
   # we have to let it have a random name, and then tag it with the desired name.
@@ -196,6 +197,7 @@ resource "aws_ecs_task_definition" "task" {
       name = volume.value["name"]
     }
   }
+  
   container_definitions = jsonencode(concat([local.container_definition], var.sidecar_containers))
   runtime_platform {
     operating_system_family = var.task_definition_os_family
@@ -221,6 +223,8 @@ resource "aws_ecs_service" "service" {
   health_check_grace_period_seconds  = var.lb_arn == "" ? null : var.health_check_grace_period_seconds
   wait_for_steady_state              = var.wait_for_steady_state
   enable_execute_command             = var.enable_execute_command
+  propagate_tags                     = var.propagate_tags
+
   network_configuration {
     subnets          = var.private_subnet_ids
     security_groups  = concat([aws_security_group.ecs_service.id], var.service_sg_ids)
@@ -271,6 +275,8 @@ resource "aws_ecs_service" "service" {
       weight            = lookup(capacity_provider_strategy.value, "weight", null)
     }
   }
+
+  tags = var.tags
 }
 
 # HACK: The workaround used in ecs/service does not work for some reason in this module, this fixes the following error:
@@ -280,4 +286,12 @@ resource "aws_ecs_service" "service" {
 # Service depends on this resources which prevents it from being created until the LB is ready
 resource "null_resource" "lb_exists" {
   triggers = var.lb_arn == "" ? {} : { alb_name = var.lb_arn }
+}
+
+#### Datadog 
+data "template_file" "datadog_task_template" {
+  count = var.enable_datadog_agent ? 1 : 0
+  template = file(
+    "${path.module}/task-definitions/datadog.json",
+  )
 }

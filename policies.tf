@@ -25,6 +25,21 @@ data "aws_iam_policy_document" "task_permissions" {
       "logs:PutLogEvents",
     ]
   }
+
+  statement {
+    effect = "Allow"
+
+    resources = [
+          "arn:aws:secretsmanager:*:*:secret:datadog/DATADOG_API_KEY/*",
+          "arn:aws:secretsmanager:*:*:secret:datadog/DATADOG_API_KEY"
+    ]
+
+    actions = [
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:ListSecrets"
+    ]
+  }
 }
 
 # Task logging privileges & ssm

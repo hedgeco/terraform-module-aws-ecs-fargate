@@ -208,6 +208,12 @@ variable "service_registry_arn" {
   type        = string
 }
 
+variable "propagate_tags" {
+  default = "SERVICE"
+  description = "Specifies whether to propagate the tags from the task definition or the service to the tasks."
+  type        = string
+}
+
 variable "with_service_discovery_srv_record" {
   default     = true
   type        = bool
@@ -293,6 +299,12 @@ variable "enable_execute_command" {
   default     = false
 }
 
+variable "enable_datadog_agent" {
+  description = "Enable datadog agent"
+  type        = bool
+  default     = false
+}
+
 variable "sidecar_containers" {
   description = "List of sidecar containers"
   type        = any
@@ -324,4 +336,11 @@ variable "extra_target_groups" {
     arn  = string
   }))
   default = []
+}
+
+variable "target_group_load_balancing_algorithm_type" {
+  description = "The load balancing algorithm to use for the service. The valid values are round_robin and least_outstanding_requests."
+  type        = string
+  default     = "round_robin"
+  
 }
