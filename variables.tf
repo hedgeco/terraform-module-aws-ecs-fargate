@@ -325,3 +325,10 @@ variable "extra_target_groups" {
   }))
   default = []
 }
+
+variable "target_group_load_balancing_algorithm_type" {
+  description = "The load balancing algorithm to use for the service. The valid values are round_robin and least_outstanding_requests."
+  type        = string
+  default     = "round_robin"
+  
+}
