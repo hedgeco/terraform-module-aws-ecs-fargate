@@ -208,6 +208,12 @@ variable "service_registry_arn" {
   type        = string
 }
 
+variable "propagate_tags" {
+  default = "SERVICE"
+  description = "Specifies whether to propagate the tags from the task definition or the service to the tasks."
+  type        = string
+}
+
 variable "with_service_discovery_srv_record" {
   default     = true
   type        = bool
@@ -289,6 +295,12 @@ variable "service_sg_ids" {
 
 variable "enable_execute_command" {
   description = "Enable aws ecs execute_command"
+  type        = bool
+  default     = false
+}
+
+variable "enable_datadog_agent" {
+  description = "Enable datadog agent"
   type        = bool
   default     = false
 }
