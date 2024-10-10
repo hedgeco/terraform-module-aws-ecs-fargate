@@ -325,3 +325,9 @@ variable "extra_target_groups" {
   }))
   default = []
 }
+
+variable "deregistration_delay" {
+  description = "The amount of time, in seconds, for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused"
+  type        = number
+  default     = 300
+}

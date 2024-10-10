@@ -99,6 +99,7 @@ resource "aws_lb_target_group" "task" {
   protocol    = var.task_container_protocol
   port        = var.task_container_port
   target_type = "ip"
+  deregistration_delay = var.deregistration_delay
   dynamic "health_check" {
     for_each = [var.health_check]
     content {
