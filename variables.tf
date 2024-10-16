@@ -208,6 +208,12 @@ variable "service_registry_arn" {
   type        = string
 }
 
+variable "propagate_tags" {
+  default = "SERVICE"
+  description = "Specifies whether to propagate the tags from the task definition or the service to the tasks."
+  type        = string
+}
+
 variable "with_service_discovery_srv_record" {
   default     = true
   type        = bool
@@ -293,6 +299,12 @@ variable "enable_execute_command" {
   default     = false
 }
 
+variable "enable_datadog_agent" {
+  description = "Enable datadog agent"
+  type        = bool
+  default     = false
+}
+
 variable "sidecar_containers" {
   description = "List of sidecar containers"
   type        = any
@@ -324,4 +336,10 @@ variable "extra_target_groups" {
     arn  = string
   }))
   default = []
+}
+
+variable "deregistration_delay" {
+  description = "The amount of time, in seconds, for Elastic Load Balancing to wait before changing the state of a deregistering target from draining to unused"
+  type        = number
+  default     = 300
 }
