@@ -89,6 +89,17 @@ resource "aws_security_group_rule" "egress_service" {
   ipv6_cidr_blocks  = ["::/0"]
 }
 
+resource "aws_security_group_rule" "ext_elb_ingress" {
+  for_each = toset(var.service_sg_ids)
+
+  security_group_id = aws_security_group.ecs_service.id
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 80
+  to_port           = 80
+  source_security_group_id = each.value
+}
+
 # ------------------------------------------------------------------------------
 # LB Target group
 # ------------------------------------------------------------------------------
