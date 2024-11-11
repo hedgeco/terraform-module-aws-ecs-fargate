@@ -89,6 +89,17 @@ resource "aws_security_group_rule" "egress_service" {
   ipv6_cidr_blocks  = ["::/0"]
 }
 
+resource "aws_security_group_rule" "ext_elb_ingress" {
+  for_each = toset(var.service_sg_ids)
+
+  security_group_id = aws_security_group.ecs_service.id
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 80
+  to_port           = 80
+  source_security_group_id = each.value
+}
+
 # ------------------------------------------------------------------------------
 # LB Target group
 # ------------------------------------------------------------------------------
@@ -198,7 +209,15 @@ resource "aws_ecs_task_definition" "task" {
     }
   }
   
-  container_definitions = jsonencode(concat([local.container_definition], var.sidecar_containers))
+container_definitions = jsonencode(
+  concat(
+    [local.container_definition],
+    length(data.template_file.datadog_task_template) > 0 && length(data.template_file.datadog_task_template.*.rendered) > 0 
+      ? [jsondecode(data.template_file.datadog_task_template.*.rendered)] 
+      : [],
+    var.sidecar_containers
+  )
+)
   runtime_platform {
     operating_system_family = var.task_definition_os_family
     cpu_architecture        = var.task_definition_cpu_arch
@@ -294,4 +313,11 @@ data "template_file" "datadog_task_template" {
   template = file(
     "${path.module}/task-definitions/datadog.json",
   )
+
+  vars = {
+    APP_NAME = var.container_name
+    DD_APM_ENABLE = var.enable_datadog_apm
+    DD_APP_KEY = "arn:aws:secretsmanager:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:secret:/DATADOG_APP_KEY*"
+    DD_API_KEY = "arn:aws:secretsmanager:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:secret:/DATADOG_API_KEY*"
+  }
 }

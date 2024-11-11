@@ -16,21 +16,65 @@
       {
         "name": "DD_SITE",
         "value": "datadoghq.com"
+      },
+      {
+        "name":   "DD_APM_ENABLED",
+        "value":  "${DD_APM_ENABLE}"
+      },
+      {
+        "name":   "DD_LOGS_ENABLED",
+        "value":  "false"
+      },
+      {
+        "name":  "DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL",
+        "value":  "false"
+      },
+      {
+        "name":  "ECS_FARGATE",
+        "value":  "true"
+      },
+      {
+        "name":  "DD_SERVICE",
+        "value":  "${APP_NAME}"
+
+      },
+      {
+        "name":  "DD_TRACE_ENABLED",
+        "value":  "false"
+      },
+      {
+        "name":  "DD_AGENT_HOST",
+        "value":  "localhost"
       }
     ],
-    "requiresCompatibilities": ["EXTERNAL"],
+    "requiresCompatibilities": [
+      "EXTERNAL"
+    ],
     "secrets": [
       {
-          "name": "DD_API_KEY",
-          "valueFrom": "/datadog/DATADOG_API_KEY"
+        "name": "DD_API_KEY",
+        "valueFrom": "${DD_API_KEY}"
+      },
+      {
+        "name": "DD_APP_KEY",
+        "valueFrom": "${DD_APP_KEY}"
       }
     ],
     "healthCheck": {
       "retries": 3,
-      "command": ["CMD-SHELL","agent health"],
+      "command": [
+        "CMD-SHELL",
+        "agent health"
+      ],
       "timeout": 5,
       "interval": 30,
       "startPeriod": 15
-    }
+    },
+    "portMappings":  [
+      {
+        "containerPort": 8126,
+        "protocol": "tcp"
+      }
+    ]
   }
 ]
