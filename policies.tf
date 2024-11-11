@@ -31,7 +31,9 @@ data "aws_iam_policy_document" "task_permissions" {
 
     resources = [
           "arn:aws:secretsmanager:*:*:secret:datadog/DATADOG_API_KEY/*",
-          "arn:aws:secretsmanager:*:*:secret:datadog/DATADOG_API_KEY"
+          "arn:aws:secretsmanager:*:*:secret:datadog/DATADOG_API_KEY",
+          "arn:aws:secretsmanager:*:*:secret:datadog/DATADOG_APP_KEY/*",
+          "arn:aws:secretsmanager:*:*:secret:datadog/DATADOG_APP_KEY"
     ]
 
     actions = [

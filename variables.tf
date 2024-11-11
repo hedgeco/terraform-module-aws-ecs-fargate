@@ -305,6 +305,12 @@ variable "enable_datadog_agent" {
   default     = false
 }
 
+variable "enable_datadog_apm" {
+  description = "Enable datadog agent"
+  type        = bool
+  default     = false
+}
+
 variable "sidecar_containers" {
   description = "List of sidecar containers"
   type        = any
