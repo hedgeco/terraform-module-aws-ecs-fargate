@@ -210,15 +210,8 @@ resource "aws_ecs_task_definition" "task" {
     }
   }
   
-container_definitions = jsonencode(
-  concat(
-    [local.container_definition],
-    length(data.template_file.datadog_task_template) > 0 && length(data.template_file.datadog_task_template.*.rendered) > 0 
-      ? [jsondecode(data.template_file.datadog_task_template.*.rendered)] 
-      : [],
-    var.sidecar_containers
-  )
-)
+  container_definitions = jsonencode(concat([local.container_definition], var.enable_datadog_agent != false ? [jsondecode(data.template_file.datadog_task_template[0].rendered)] : [] , var.sidecar_containers))
+
   runtime_platform {
     operating_system_family = var.task_definition_os_family
     cpu_architecture        = var.task_definition_cpu_arch
@@ -316,9 +309,9 @@ data "template_file" "datadog_task_template" {
   )
 
   vars = {
-    APP_NAME = var.container_name
+    APP_NAME = var.container_name != "" ? var.container_name : var.name_prefix
     DD_APM_ENABLE = var.enable_datadog_apm
-    DD_APP_KEY = "arn:aws:secretsmanager:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:secret:/DATADOG_APP_KEY*"
-    DD_API_KEY = "arn:aws:secretsmanager:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:secret:/DATADOG_API_KEY*"
+    DD_APP_KEY = "DATADOG_APP_KEY"
+    DD_API_KEY = "DATADOG_API_KEY"
   }
 }
