@@ -49,10 +49,6 @@
     {
       "name":  "DD_TRACE_ENABLED",
       "value":  "true"
-    },
-    {
-      "name":  "DD_AGENT_HOST",
-      "value":  "localhost"
     }
   ],
   "requiresCompatibilities": [
@@ -83,6 +79,11 @@
       "containerPort": 8126,
       "protocol": "tcp",
       "hostPort": 8126
+    },
+    {
+      "containerPort": 8125,
+      "protocol": "tcp",
+      "hostPort": 8125
     }
   ]
 }
