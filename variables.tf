@@ -305,6 +305,12 @@ variable "enable_datadog_agent" {
   default     = false
 }
 
+variable "enable_datadog_agent_debug" {
+  description = "Enable datadog agent ecs logs for debugging"
+  type        = bool
+  default     = false
+}
+
 variable "enable_datadog_apm" {
   description = "Enable datadog agent"
   type        = bool

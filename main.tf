@@ -304,9 +304,7 @@ resource "null_resource" "lb_exists" {
 #### Datadog 
 data "template_file" "datadog_task_template" {
   count = var.enable_datadog_agent ? 1 : 0
-  template = file(
-    "${path.module}/task-definitions/datadog.json",
-  )
+  template = var.enable_datadog_agent_debug ? file("${path.module}/task-definitions/datadog_debug.json") : file("${path.module}/task-definitions/datadog.json")
 
   vars = {
     APP_NAME = var.container_name != "" ? var.container_name : var.name_prefix
@@ -314,4 +312,11 @@ data "template_file" "datadog_task_template" {
     DD_APP_KEY = "DATADOG_APP_KEY"
     DD_API_KEY = "DATADOG_API_KEY"
   }
+}
+
+resource "aws_cloudwatch_log_group" "datadog_logs" {
+  count = var.enable_datadog_agent_debug ? 1 : 0
+  name              = var.container_name != "" ? "${var.container_name}/datadog-agent" : "${var.name_prefix}/datadog-agent"
+  retention_in_days = var.log_retention_in_days
+  tags              = var.tags
 }
