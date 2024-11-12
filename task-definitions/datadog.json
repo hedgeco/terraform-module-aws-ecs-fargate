@@ -1,4 +1,3 @@
-
 {
   "name": "datadog-agent",
   "image": "public.ecr.aws/datadog/agent:latest",

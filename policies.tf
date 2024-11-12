@@ -18,6 +18,7 @@ data "aws_iam_policy_document" "task_permissions" {
 
     resources = compact([
       "${var.log_group_name != "" ? "" : aws_cloudwatch_log_group.main.0.arn}:*",
+      "${var.enable_datadog_agent_debug != "" ? "" : aws_cloudwatch_log_group.datadog_logs.0.arn}:*",
     ])
 
     actions = [
