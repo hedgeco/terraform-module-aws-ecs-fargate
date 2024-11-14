@@ -188,7 +188,6 @@ resource "aws_ecs_task_definition" "task" {
   cpu                      = var.task_definition_cpu
   memory                   = var.task_definition_memory
   task_role_arn            = aws_iam_role.task.arn
-  pid_mode                 = var.enable_datadog_agent != false ? "task" : "host"
   
   dynamic "volume" {
     for_each = var.efs_volumes
