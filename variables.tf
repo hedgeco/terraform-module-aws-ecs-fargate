@@ -317,6 +317,12 @@ variable "enable_datadog_apm" {
   default     = false
 }
 
+variable "datadog_env" {
+  description = "Datadog Environment"
+  type        = string
+  default     = ""
+}
+
 variable "sidecar_containers" {
   description = "List of sidecar containers"
   type        = any

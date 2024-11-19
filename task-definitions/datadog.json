@@ -2,8 +2,12 @@
   "name": "datadog-agent",
   "image": "public.ecr.aws/datadog/agent:latest",
   "essential": false,
-  "cpu": 10,
+  "cpu": 128,
   "memory": 256,
+  "dockerLabels": {
+    "com.datadoghq.tags.env": "[\"${DD_ENV}\"]",
+    "com.datadoghq.tags.service": "${APP_NAME}"
+  },
   "environment": [
     {
       "name": "DD_SITE",
@@ -41,6 +45,10 @@
     {
       "name":  "DD_TRACE_ENABLED",
       "value":  "true"
+    },
+    {
+      "name":  "DD_TAGS",
+      "value":  "${APP_NAME}"
     }
   ],
   "requiresCompatibilities": [
@@ -74,7 +82,7 @@
     },
     {
       "containerPort": 8125,
-      "protocol": "tcp",
+      "protocol": "udp",
       "hostPort": 8125
     }
   ]

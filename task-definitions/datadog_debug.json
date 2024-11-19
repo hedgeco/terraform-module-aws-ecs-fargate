@@ -2,7 +2,7 @@
   "name": "datadog-agent",
   "image": "public.ecr.aws/datadog/agent:latest",
   "essential": false,
-  "cpu": 10,
+  "cpu": 128,
   "memory": 256,
   "logConfiguration": {
     "logDriver": "awslogs",
@@ -11,6 +11,10 @@
         "awslogs-region": "us-east-1",
         "awslogs-stream-prefix": "ecs"
     }
+  },
+  "dockerLabels": {
+    "com.datadoghq.tags.env": "[\"${DD_ENV}\"]",
+    "com.datadoghq.tags.service": "${APP_NAME}"
   },
   "environment": [
     {
@@ -82,7 +86,7 @@
     },
     {
       "containerPort": 8125,
-      "protocol": "tcp",
+      "protocol": "udp",
       "hostPort": 8125
     }
   ]
