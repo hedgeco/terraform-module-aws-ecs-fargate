@@ -312,6 +312,7 @@ data "template_file" "datadog_task_template" {
     DD_APM_ENABLE = var.enable_datadog_apm
     DD_APP_KEY = "DATADOG_APP_KEY"
     DD_API_KEY = "DATADOG_API_KEY"
+    DD_ENV = var.datadog_env
   }
 }
 
