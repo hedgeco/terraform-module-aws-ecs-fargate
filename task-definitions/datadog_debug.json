@@ -42,6 +42,14 @@
       "value":  "true"
     },
     {
+      "name":  "DD_APM_COMPUTE_STATS_BY_SPAN_KIND",
+      "value":  "true"
+    },
+    {
+      "name":  "DD_APM_PEER_TAGS_AGGREGATION",
+      "value":  "true"
+    },
+    {
       "name":  "ECS_FARGATE",
       "value":  "true"
     },
