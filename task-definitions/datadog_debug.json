@@ -14,7 +14,7 @@
   },
   "dockerLabels": {
     "com.datadoghq.tags.env": "[\"${DD_ENV}\"]",
-    "com.datadoghq.tags.service": "${APP_NAME}"
+    "com.datadoghq.tags.service": "${APP_NAME}-${DD_ENV}"
   },
   "environment": [
     {
@@ -23,6 +23,10 @@
     },
     {
       "name": "DD_PROCESS_AGENT_ENABLED",
+      "value": "true"
+    },
+    {
+      "name": "DD_PROCESS_AGENT_PROCESS_COLLECTION_ENABLED",
       "value": "true"
     },
     {
@@ -36,6 +40,10 @@
     {
       "name":   "DD_LOGS_ENABLED",
       "value":  "true"
+    },
+    {
+      "name":   "DD_LOG_LEVEL",
+      "value":  "info"
     },
     {
       "name":  "DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL",
@@ -54,13 +62,22 @@
       "value":  "true"
     },
     {
+      "name":  "DD_TRACE_ENABLED",
+      "value":  "true"
+    },
+    {
       "name":  "DD_SERVICE",
       "value":  "${APP_NAME}"
 
     },
     {
-      "name":  "DD_TRACE_ENABLED",
-      "value":  "true"
+      "name":  "DD_ENV",
+      "value":  "${DD_ENV}"
+
+    },
+    {
+      "name": "DD_DOCKER_LABELS_AS_TAGS",
+      "value": "{\"com.datadoghq.tags.service\":\"${APP_NAME}\", \"com.datadoghq.tags.env\":\"${DD_ENV}\"}"
     }
   ],
   "requiresCompatibilities": [
