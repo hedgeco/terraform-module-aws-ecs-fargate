@@ -155,6 +155,14 @@ locals {
   task_container_environment   = [for k, v in var.task_container_environment : { name = k, value = v }]
   task_container_mount_points  = concat([for v in var.efs_volumes : { containerPath = v.mount_point, readOnly = v.readOnly, sourceVolume = v.name }], var.mount_points)
 
+  datadog_dockerlabels = jsonencode({
+    dockerLabels = {
+      "com.datadoghq.tags.env"     = "${var.datadog_env}"
+      "com.datadoghq.tags.service" = "${var.container_name != "" ? var.container_name : var.name_prefix}"
+    }
+  })
+
+
   log_configuration_options = merge({
     "awslogs-group"         = var.log_group_name != "" ? var.log_group_name : aws_cloudwatch_log_group.main.0.name,
     "awslogs-region"        = data.aws_region.current.name
@@ -177,7 +185,7 @@ locals {
     }
     "privileged" : var.privileged
     "readonlyRootFilesystem" : var.readonlyRootFilesystem
-  }, local.task_container_secrets, local.repository_credentials, local.task_container_health_check)
+  }, local.task_container_secrets, local.repository_credentials, local.task_container_health_check, var.enable_datadog_agent ? jsondecode(local.datadog_dockerlabels): {})
 }
 
 resource "aws_ecs_task_definition" "task" {
@@ -188,7 +196,8 @@ resource "aws_ecs_task_definition" "task" {
   cpu                      = var.task_definition_cpu
   memory                   = var.task_definition_memory
   task_role_arn            = aws_iam_role.task.arn
-  
+  pid_mode                 = "task"
+
   dynamic "volume" {
     for_each = var.efs_volumes
     content {

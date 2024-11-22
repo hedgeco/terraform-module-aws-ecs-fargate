@@ -26,23 +26,6 @@ data "aws_iam_policy_document" "task_permissions" {
       "logs:PutLogEvents",
     ]
   }
-
-  statement {
-    effect = "Allow"
-
-    resources = [
-          "arn:aws:secretsmanager:*:*:secret:datadog/DATADOG_API_KEY/*",
-          "arn:aws:secretsmanager:*:*:secret:datadog/DATADOG_API_KEY",
-          "arn:aws:secretsmanager:*:*:secret:datadog/DATADOG_APP_KEY/*",
-          "arn:aws:secretsmanager:*:*:secret:datadog/DATADOG_APP_KEY"
-    ]
-
-    actions = [
-      "secretsmanager:GetSecretValue",
-      "secretsmanager:DescribeSecret",
-      "secretsmanager:ListSecrets"
-    ]
-  }
 }
 
 # Task logging privileges & ssm
@@ -77,6 +60,22 @@ data "aws_iam_policy_document" "task_execution_permissions" {
       "logs:PutLogEvents",
     ]
   }
+
+  statement {
+    effect = "Allow"
+
+    resources = [
+          "arn:aws:secretsmanager:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:secret:DATADOG_API_KEY*",
+          "arn:aws:secretsmanager:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:secret:DATADOG_APP_KEY*",
+    ]
+
+    actions = [
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:ListSecrets"
+    ]
+  }
+  
 }
 
 data "aws_kms_key" "secretsmanager_key" {
