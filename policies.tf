@@ -75,6 +75,18 @@ data "aws_iam_policy_document" "task_execution_permissions" {
       "secretsmanager:ListSecrets"
     ]
   }
+  statement {
+    effect = "Allow"
+
+    resources = [
+          "arn:aws:ssm:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:parameter:DATADOG_API_KEY",
+          "arn:aws:ssm:${data.aws_region.current.id}:${data.aws_caller_identity.current.id}:parameter:DATADOG_APP_KEY",
+    ]
+
+    actions = [
+      "ssm:GetParameters"
+    ]
+  }
   
 }
 
